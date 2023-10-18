@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			require: true,
 		},
+		avatar: {
+			type: String,
+			default: "https://www.slotcharter.net/wp-content/uploads/2020/02/no-avatar-300x300.png",
+		},
 	},
 	{
 		timestamps: true,
