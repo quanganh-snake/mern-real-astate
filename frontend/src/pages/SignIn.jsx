@@ -1,13 +1,15 @@
 import clsx from "clsx";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { signInStart, signInSuccess, signInFailed } from "../redux/slice/userSlice";
 
 function SignIn() {
 	const [formData, setFormData] = useState({});
-	const [error, setError] = useState(null);
-	const [isLoading, setLoading] = useState(false);
+	const { loading, error } = useSelector((state) => state?.user);
 	const [isOpen, setOpen] = useState(true);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const handleChange = (e) => {
 		setFormData({
@@ -19,7 +21,7 @@ function SignIn() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			setLoading(true);
+			dispatch(signInStart());
 			const res = await fetch(`/api/v1/auth/signin`, {
 				method: "POST",
 				headers: {
@@ -32,16 +34,13 @@ function SignIn() {
 			console.log("🚀 ~ file: SignIn.jsx:32 ~ handleSubmit ~ data:", data);
 
 			if (data.success === false) {
-				setError(data.message);
-				setLoading(false);
+				dispatch(signInFailed(data.message));
 				return;
 			}
-			setLoading(false);
-			setError(null);
+			dispatch(signInSuccess(data));
 			navigate("/");
 		} catch (error) {
-			setLoading(false);
-			setError(error.message);
+			dispatch(signInFailed(error.message));
 			setOpen(!isOpen);
 		}
 	};
@@ -75,8 +74,8 @@ function SignIn() {
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 				<input type="email" placeholder="Email" className="border p-3 rounded-lg focus:outline-none" id="email" name="email" onChange={handleChange} />
 				<input type="password" placeholder="Password" className="border p-3 rounded-lg focus:outline-none" id="password" name="password" onChange={handleChange} />
-				<button disabled={isLoading} type="submit" className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-					{isLoading ? "Loading..." : "Sign in"}
+				<button disabled={loading} type="submit" className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+					{loading ? "Loading..." : "Sign in"}
 				</button>
 			</form>
 			<div className="flex gap-2 mt-5">
