@@ -1,5 +1,5 @@
-export const test = (req, res) => {
+export const helloUserRoute = (req, res) => {
 	res.json({
-		message: "Api route is required",
+		message: "Hello: USER Controller - Api route is required",
 	});
 };
