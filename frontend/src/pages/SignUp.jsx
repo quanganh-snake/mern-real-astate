@@ -6,6 +6,7 @@ function SignUp() {
 	const [formData, setFormData] = useState({});
 	const [error, setError] = useState(null);
 	const [isLoading, setLoading] = useState(false);
+	const [isOpen, setOpen] = useState(true);
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -40,7 +41,12 @@ function SignUp() {
 		} catch (error) {
 			setLoading(false);
 			setError(error.message);
+			setOpen(!isOpen);
 		}
+	};
+
+	const handleCloseAlert = () => {
+		setOpen(!isOpen);
 	};
 
 	console.log(">>>formData: ", formData);
@@ -48,11 +54,17 @@ function SignUp() {
 		<div className="p-3 max-w-lg mx-auto">
 			<h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
 			{error && (
-				<div class={clsx(`${error ? "bg-red-100 border-red-400 text-red-700" : "bg-green-100 border-green-400 text-green-700"} border px-4 py-3 rounded relative mb-3`)} role="alert">
-					<strong class="font-bold">Error:</strong>
-					<span class="block sm:inline">{error}</span>
-					<span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-						<svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+				<div
+					className={clsx(
+						`${error ? "bg-red-100 border-red-400 text-red-700" : "bg-green-100 border-green-400 text-green-700"} border px-4 py-3 rounded relative mb-3`,
+						isOpen ? "block" : " hidden"
+					)}
+					role="alert"
+				>
+					<strong className="font-bold">Error:</strong>
+					<span className="block sm:inline">{error}</span>
+					<span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={handleCloseAlert}>
+						<svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
 							<title>Close</title>
 							<path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
 						</svg>
