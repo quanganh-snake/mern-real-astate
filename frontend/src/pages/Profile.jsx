@@ -13,6 +13,7 @@ import {
 	signOutUserSuccess,
 	signOutUserFailed,
 } from "../redux/slice/userSlice.js";
+import { Link } from "react-router-dom";
 function Profile() {
 	// variables
 	const fileRef = useRef(null);
@@ -149,7 +150,10 @@ function Profile() {
 				<input type="password" placeholder="Password..." id="password" onChange={handleChange} className="border outline-none p-2 mb-3 rounded-lg" />
 				<p className="text-center text-red-700 mb-3">{error ? error : null}</p>
 				<p className="text-center text-green-700 mb-3">{updateSuccess ? "User is uploaded successfully!!!" : null}</p>
-				<button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">{loading ? "Loading..." : "Update"}</button>
+				<button className="bg-slate-700 text-white rounded-lg mb-3 p-3 uppercase hover:opacity-95 disabled:opacity-80">{loading ? "Loading..." : "Update"}</button>
+				<Link to="/create-listing" className="button bg-green-700 uppercase p-3 rounded-lg text-white text-center hover:opacity-95 disabled:opacity-80">
+					Create Listing
+				</Link>
 			</form>
 			<div className="flex justify-between mt-5">
 				<span className="text-red-700 cursor-pointer" onClick={handleDeleteUser}>
