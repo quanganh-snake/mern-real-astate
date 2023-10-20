@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { app } from "../../firebase.js";
+import Swal from "sweetalert2";
 import {
 	updateUserStart,
 	updateUserSuccess,
@@ -127,6 +128,35 @@ function Profile() {
 		}
 	};
 
+	const handleDeleteListing = async (id) => {
+		try {
+			Swal.fire({
+				title: "Are you sure?",
+				text: "You won't be able to revert this!",
+				icon: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "Yes, delete it!",
+			}).then(async (result) => {
+				if (result.isConfirmed) {
+					const res = await fetch(`/api/v1/listing/delete/${id}`, {
+						method: "DELETE",
+					});
+					const data = await res.json();
+					if (data.success === false) {
+						console.log(data.message);
+						return;
+					}
+					setUserListing((prev) => prev.filter((listing) => listing._id !== id));
+					Swal.fire("Deleted!", "Your listing has been deleted.", "success");
+				}
+			});
+		} catch (error) {
+			console.log(error.message);
+		}
+	};
+
 	useEffect(() => {
 		if (fileAvatar) {
 			handleFileUpload(fileAvatar);
@@ -196,7 +226,13 @@ function Profile() {
 								<p>{listing.name}</p>
 							</Link>
 							<div className="flex flex-col gap-y-2">
-								<button type="button" className="bg-red-700 px-3 py-1 rounded-lg text-white hover:underline font-semibold">
+								<button
+									type="button"
+									onClick={() => {
+										handleDeleteListing(listing._id);
+									}}
+									className="bg-red-700 px-3 py-1 rounded-lg text-white hover:underline font-semibold"
+								>
 									Delete
 								</button>
 								<button type="button" className="bg-yellow-500 px-3 py-1 rounded-lg text-black hover:underline font-semibold">
