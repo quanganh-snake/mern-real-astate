@@ -23,6 +23,8 @@ function Profile() {
 	const [fileUploadError, setFileUploadError] = useState(false);
 	const [formData, setFormData] = useState({});
 	const [updateSuccess, setUpdateSuccess] = useState(false);
+	const [showListingError, setShowListingError] = useState(false);
+	const [userListing, setUserListing] = useState([]);
 	const dispatch = useDispatch();
 
 	//event handlers
@@ -110,6 +112,21 @@ function Profile() {
 		}
 	};
 
+	const handleShowListing = async () => {
+		try {
+			setShowListingError(false);
+			const res = await fetch(`/api/v1/user/listings/${currentUser._id}`);
+			const data = await res.json();
+			if (data.success === false) {
+				setShowListingError(true);
+				return;
+			}
+			setUserListing(data);
+		} catch (error) {
+			setShowListingError(true);
+		}
+	};
+
 	useEffect(() => {
 		if (fileAvatar) {
 			handleFileUpload(fileAvatar);
@@ -163,6 +180,33 @@ function Profile() {
 					Sign out
 				</span>
 			</div>
+			<button onClick={handleShowListing} className="text-green-700 w-full mb-3">
+				Show Listings
+			</button>
+			{showListingError && <p className="text-red-700">Error showing listings...</p>}
+			{userListing && userListing.length > 0 && (
+				<div className="">
+					<h1 className="text-center my-7 text-3xl font-semibold">Your Listings</h1>
+					{userListing.map((listing) => (
+						<div className="w-full flex items-center justify-between border shadow rounded-lg bg-white hover:bg-slate-100 mb-2 p-3" key={listing._id}>
+							<Link to={`/listing/${listing._id}`}>
+								<img src={listing.imageUrls[0]} alt="thumbnail" className="w-50 h-16 rounded-lg object-contain" />
+							</Link>
+							<Link className="hover:underline font-semibold" to={`/listing/${listing._id}`}>
+								<p>{listing.name}</p>
+							</Link>
+							<div className="flex flex-col gap-y-2">
+								<button type="button" className="bg-red-700 px-3 py-1 rounded-lg text-white hover:underline font-semibold">
+									Delete
+								</button>
+								<button type="button" className="bg-yellow-500 px-3 py-1 rounded-lg text-black hover:underline font-semibold">
+									Edit
+								</button>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }
