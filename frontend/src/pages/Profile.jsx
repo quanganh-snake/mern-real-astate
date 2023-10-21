@@ -231,13 +231,15 @@ function Profile() {
 									onClick={() => {
 										handleDeleteListing(listing._id);
 									}}
-									className="bg-red-700 px-3 py-1 rounded-lg text-white hover:underline font-semibold"
+									className="bg-red-700 w-full px-3 py-1 rounded-lg text-white hover:underline font-semibold"
 								>
 									Delete
 								</button>
-								<button type="button" className="bg-yellow-500 px-3 py-1 rounded-lg text-black hover:underline font-semibold">
-									Edit
-								</button>
+								<Link to={`/update-listing/${listing._id}`}>
+									<button type="button" className="bg-yellow-500 w-full px-3 py-1 rounded-lg text-black hover:underline font-semibold">
+										Edit
+									</button>
+								</Link>
 							</div>
 						</div>
 					))}
