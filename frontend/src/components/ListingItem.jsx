@@ -4,7 +4,7 @@ import { MdLocationOn } from "react-icons/md";
 import noImageEstate from "../assets/Images/151-1512476_real-estate-images-h.png";
 function ListingItem({ listing }) {
 	return (
-		<div className="w-full md:w-[355px] bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg">
+		<div className="w-full md:w-[300px] bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg">
 			<Link to={`/listing/${listing._id}`}>
 				<img src={listing.imageUrls[0] || noImageEstate} alt={listing.name} className="h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300" />
 				<div className="p-3 flex flex-col gap-2 w-full">
