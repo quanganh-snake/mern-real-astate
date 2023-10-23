@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
 
 function Search() {
+	// Variables
 	const navigate = useNavigate();
-
 	const [sidebarData, setSidebarData] = useState({
 		searchTerm: "",
 		type: "all",
@@ -17,7 +17,9 @@ function Search() {
 
 	const [listings, setListings] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [showMore, setShowMore] = useState(false);
 
+	// Event handlers
 	const handleChange = (e) => {
 		if (e.target.id === "all" || e.target.id === "rent" || e.target.id === "sale") {
 			setSidebarData({
@@ -68,6 +70,20 @@ function Search() {
 		navigate(`/search?${searchQuery}`);
 	};
 
+	const onShowMoreClick = async () => {
+		const numberOfListings = listings.length;
+		const startIndex = numberOfListings;
+		const urlParams = new URLSearchParams(location.search);
+		urlParams.set("startIndex", startIndex);
+		const searchQuery = urlParams.toString();
+		const res = await fetch(`/api/v1/listing/get?${searchQuery}`);
+		const data = await res.json();
+		if (data.length < 9) {
+			setShowMore(false);
+		}
+		setListings([...listings, ...data]);
+	};
+
 	useEffect(() => {
 		const urlParams = new URLSearchParams(location.search);
 		const searchTermFromUrl = urlParams.get("searchTerm");
@@ -92,10 +108,16 @@ function Search() {
 
 		const fetchingListings = async () => {
 			setLoading(true);
+			setShowMore(false);
 			const searchQuery = urlParams.toString();
 			const res = await fetch(`/api/v1/listing/get?${searchQuery}`);
 			const data = await res.json();
-			setListings(data);
+			if (data.length > 8) {
+				setShowMore(true);
+			} else {
+				setShowMore(false);
+			}
+			setListings(data.splice(0, 9));
 			setLoading(false);
 		};
 
@@ -103,7 +125,6 @@ function Search() {
 	}, [location.search]);
 
 	console.log(listings);
-
 	return (
 		<div className="flex flex-col md:flex-row">
 			<div className="left-site p-7 border-b-2 md:border-r-2 md:min-h-screen">
@@ -178,10 +199,15 @@ function Search() {
 			{/* END: .left-site */}
 			<div className="right-site w-full">
 				<h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5 text-center">Listing results:</h1>
-				<div className="p-7 flex flex-wrap gap-4">
+				<div className="p-7 flex sm:justify-center xl:justify-normal flex-wrap gap-4">
 					{!loading && listings.length === 0 && <p className="text-xl text-center text-slate-700 my-7">No listing found!</p>}
 					{loading && <p className="text-xl text-center text-slate-700 my-7">Loading...</p>}
 					{!loading && listings && listings.map((listing) => <ListingItem key={listing._id} listing={listing} />)}
+					{showMore && (
+						<button onClick={onShowMoreClick} className="text-green-700 hover:underline p-7 text-center w-full">
+							Show more
+						</button>
+					)}
 				</div>
 			</div>
 			{/* END: .right-site */}

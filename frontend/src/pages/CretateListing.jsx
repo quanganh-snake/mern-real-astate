@@ -61,7 +61,7 @@ function CretateListing() {
 				"state_changed",
 				(snapshot) => {
 					const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-					console.log(`Upload is ${progress}% done`);
+					// console.log(`Upload is ${progress}% done`);
 				},
 				(error) => {
 					reject(error);
@@ -104,8 +104,6 @@ function CretateListing() {
 		}
 	};
 
-	console.log(formData);
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
@@ -130,8 +128,8 @@ function CretateListing() {
 			setLoading(false);
 			if (data.success === false) {
 				setError(data.message);
-            }
-            navigate(`/listing/${data._id}`)
+			}
+			navigate(`/listing/${data._id}`);
 		} catch (error) {
 			setError(error.message);
 			setLoading(false);
